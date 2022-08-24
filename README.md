@@ -2,6 +2,9 @@
 
 [![NPM](https://img.shields.io/npm/v/react-youtube-music-player.svg)](https://www.npmjs.com/package/react-youtube-music-player) [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
+![alt text](https://github.com/carlrobertoh/react-youtube-music-player/blob/master/example-player.png?raw=true)
+For example player, [click here](https://c7b19f.csb.app/)
+
 ## Installation
 
 ```bash
@@ -11,28 +14,13 @@ npm install react-youtube-music-player
 ## Usage
 
 ```tsx
-import React from "react";
-import { PlayerState, useYoutube } from "react-youtube-music-player";
-
-export const ExamplePlayer = () => {
-  const { playerDetails, actions } = useYoutube({
-    id: "RDLbqzhXWl33U",
-    type: "playlist",
-  });
-
-  return (
-    <>
-      <div>{playerDetails.title}</div>
-      <button onClick={actions.previousVideo}>Previous</button>
-      {playerDetails.state === PlayerState.PLAYING ? (
-        <button onClick={actions.pauseVideo}>Pause</button>
-      ) : (
-        <button onClick={actions.playVideo}>Play</button>
-      )}
-      <button onClick={actions.nextVideo}>Next</button>
-    </>
-  );
-};
+import { useYoutube } from "react-youtube-music-player";
+```
+```tsx
+const { playerDetails, actions } = useYoutube({
+  id: "RDLbqzhXWl33U",
+  type: "playlist",
+});
 ```
 
 ### Input props
