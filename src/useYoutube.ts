@@ -29,6 +29,11 @@ interface YoutubeHook {
 let player: YT.Player;
 
 const loadApi = (id: string, options: YT.PlayerOptions) => {
+  const iframe = document.createElement("div");
+  iframe.id = `youtube-player-${id}`;
+  iframe.style.setProperty("display", "none");
+  document.body.appendChild(iframe);
+
   if (document.querySelector("[data-youtube]")) {
     player = new YT.Player(`youtube-player-${id}`, options);
     return;

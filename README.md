@@ -12,7 +12,7 @@ npm install react-youtube-music-player
 
 ```tsx
 import React from "react";
-import { useYoutube } from "react-youtube-music-player";
+import { PlayerState, useYoutube } from "react-youtube-music-player";
 
 export const ExamplePlayer = () => {
   const { playerDetails, actions } = useYoutube({
@@ -22,8 +22,14 @@ export const ExamplePlayer = () => {
 
   return (
     <>
-      <div id="youtube-player-RDLbqzhXWl33U" style={{ display: "none" }} />
-      ...
+      <div>{playerDetails.title}</div>
+      <button onClick={actions.previousVideo}>Previous</button>
+      {playerDetails.state === PlayerState.PLAYING ? (
+        <button onClick={actions.pauseVideo}>Pause</button>
+      ) : (
+        <button onClick={actions.playVideo}>Play</button>
+      )}
+      <button onClick={actions.nextVideo}>Next</button>
     </>
   );
 };
@@ -38,6 +44,7 @@ export const ExamplePlayer = () => {
 | `events` | `onReady`: Called when media is initialized and ready to play <br/> `onStateChanged`: Called when video state changed <br /> `onError`: Called when error occurs |
 
 ### Return props
+
 #### State of the player: `playerDetails`
 
 | Prop          | Description                                                                                        |
