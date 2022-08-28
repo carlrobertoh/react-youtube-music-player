@@ -1,0 +1,46 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.app {
+  font-family: sans-serif;
+  text-align: center;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.player-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  width: 32px;
+  border: 0;
+  background: inherit;
+  cursor: pointer;
+}
+
+.player-controls > button.emphasised {
+  background: red;
+  color: white;
+  border-radius: 100%;
+}
+
+.player-controls .volume-control {
+  margin-left: 24px;
+}
+
+.player-controls .volume-control svg {
+  margin-right: 8px;
+}

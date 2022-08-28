@@ -1,16 +1,17 @@
 {
   "name": "react-youtube-music-player",
-  "version": "1.0.1",
-  "description": "",
+  "version": "1.0.5",
+  "description": "A simple React hook for building a music player using the official YouTube IFrame Player API",
   "author": "Carl-Robert Linnupuu",
   "license": "ISC",
-  "main": "lib/index.js",
-  "typings": "lib/index.d.ts",
-  "jsnext:main": "lib-esm/index.js",
-  "module": "lib-esm/index.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "types": "lib/esm/index.d.ts",
   "source": "src/index.ts",
   "scripts": {
-    "build": "tsc && tsc -m es6 --outDir lib-esm",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --outDir lib/esm --lib es6,dom -m es2015",
+    "build:cjs": "tsc --outDir lib/cjs --lib es6,dom -m commonjs",
     "lint": "eslint src/**"
   },
   "dependencies": {
@@ -18,10 +19,6 @@
     "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.14.6",
-    "@babel/preset-env": "^7.14.7",
-    "@babel/preset-react": "^7.14.5",
-    "@babel/preset-typescript": "^7.14.5",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
     "@types/youtube": "^0.0.47",
@@ -29,14 +26,7 @@
     "@typescript-eslint/parser": "^4.27.0",
     "eslint": "^7.28.0",
     "eslint-plugin-react": "^7.24.0",
-    "html-webpack-plugin": "^5.5.0",
     "prettier": "^2.3.1",
-    "ts-loader": "^9.2.3",
-    "css-loader": "^6.2.0",
-    "style-loader": "^3.2.1",
-    "awesome-typescript-loader": "^5.2.1",
-    "typescript": "^3.7.5",
-    "webpack": "^5.39.0",
-    "webpack-cli": "^4.7.2"
+    "typescript": "^3.7.5"
   }
 }

@@ -1,14 +1,25 @@
 import { useEffect, useState } from "react";
 import { PlayerDetails, PlayerState } from "./types";
 
+interface Options {
+  origin: string;
+  autoplay: boolean;
+  host: string;
+  loop: boolean;
+  mute: boolean;
+  start: number;
+  end: number;
+}
+
 interface Props {
   id: string;
   type: "playlist" | "video";
-  events?: {
-    onReady?: (event: YT.PlayerEvent) => void;
-    onStateChange?: (event: YT.OnStateChangeEvent) => void;
-    onError?: (event: YT.OnErrorEvent) => void;
-  };
+  options?: Partial<Options>;
+  events?: Partial<{
+    onReady: (event: YT.PlayerEvent) => void;
+    onStateChange: (event: YT.OnStateChangeEvent) => void;
+    onError: (event: YT.OnErrorEvent) => void;
+  }>;
 }
 
 interface Actions {
@@ -28,13 +39,15 @@ interface YoutubeHook {
 
 let player: YT.Player;
 
-const loadApi = (id: string, options: YT.PlayerOptions) => {
+const initializeIframe = (id: string) => {
   const iframe = document.createElement("div");
   iframe.id = `youtube-player-${id}`;
   iframe.style.setProperty("display", "none");
   document.body.appendChild(iframe);
+};
 
-  if (document.querySelector("[data-youtube]")) {
+const loadApi = (id: string, options: YT.PlayerOptions) => {
+  if (document.querySelector("[data-youtube]") && window.YT) {
     player = new YT.Player(`youtube-player-${id}`, options);
     return;
   }
@@ -51,27 +64,39 @@ const loadApi = (id: string, options: YT.PlayerOptions) => {
   };
 };
 
-export const useYoutube = (props: Props): YoutubeHook => {
-  const getPlayerOptions = (type: "video" | "playlist"): YT.PlayerOptions => ({
-    ...(type === "playlist"
-      ? {
-          playerVars: {
-            listType: "playlist",
-            list: props.id,
-          },
-        }
-      : { videoId: props.id }),
+export const useYoutube = ({
+  id,
+  type,
+  options,
+  events,
+}: Props): YoutubeHook => {
+  const getPlayerOptions = (
+    type: "video" | "playlist",
+    options?: Partial<Options>
+  ): YT.PlayerOptions => ({
+    videoId: type === "video" ? id : undefined,
+    host: options?.host,
+    playerVars: {
+      listType: type === "playlist" ? type : undefined,
+      list: type === "playlist" ? id : undefined,
+      origin: options?.origin,
+      autoplay: options?.autoplay ? 1 : 0,
+      loop: options?.loop ? 1 : 0,
+      mute: options?.mute ? 1 : 0,
+      start: options?.start,
+      end: options?.end,
+    },
     events: {
       onReady: (event: YT.PlayerEvent) => {
         setState(event.target);
-        props.events?.onReady?.(event);
+        events?.onReady?.(event);
       },
       onStateChange: (event: YT.OnStateChangeEvent) => {
         setState(event.target);
-        props.events?.onStateChange?.(event);
+        events?.onStateChange?.(event);
       },
       onError: (event: YT.OnErrorEvent) => {
-        props.events?.onError?.(event);
+        events?.onError?.(event);
       },
     },
   });
@@ -86,11 +111,13 @@ export const useYoutube = (props: Props): YoutubeHook => {
   });
 
   useEffect(() => {
-    loadApi(props.id, getPlayerOptions(props.type));
+    initializeIframe(id);
+    loadApi(id, getPlayerOptions(type, options));
+
     return () => {
-      player.destroy();
+      player?.destroy();
     };
-  }, [props.id, props.type]);
+  }, [id, type]);
 
   const setState = ({
     playerInfo: { videoData, ...playerInfo },
@@ -107,7 +134,6 @@ export const useYoutube = (props: Props): YoutubeHook => {
 
   const proxy = (functionName: keyof Actions, args: unknown[] = []) => {
     if (typeof player?.[functionName] === "function") {
-      // @ts-ignore
       player[functionName].call(player, ...args);
     } else {
       console.error("Player not initialized.");
